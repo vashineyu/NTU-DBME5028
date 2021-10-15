@@ -7,6 +7,8 @@ __pycache__/
 *.so
 
 # models / large files
+*.tar
+*.gz
 *.h5
 *.h5df
 *.pt
