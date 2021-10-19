@@ -10,6 +10,8 @@ from sklearn.metrics import (
     recall_score,
     precision_score
 )
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_digits
 
 import h5py
 
@@ -44,6 +46,7 @@ def show_example_images(image_array, figsize=(8,8), n_grid_x=10):
 
 
 def get_result_metrics(y_true, y_score, score_threshold=0.5):
+    # For binary cases
     y_pred_binary = y_score >= score_threshold
 
     fpr, tpr, _ = roc_curve(y_true=y_true, y_score=y_score)
@@ -64,3 +67,13 @@ def get_result_metrics(y_true, y_score, score_threshold=0.5):
         "precision": precision_
     }
     return output
+
+def load_and_process_digits():
+    digits_data = load_digits()
+    x, y = digits_data["images"], digits_data["target"]
+    x = x.reshape((len(x), -1))  # convert to vector
+    x = np.array(x, dtype=np.float32) / 255.  # do min/max normalization
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=42)
+    x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=0.1, random_state=42)
+
+    return x_train, y_train, x_valid, y_valid, x_test, y_test
